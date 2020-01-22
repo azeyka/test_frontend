@@ -6,18 +6,23 @@ import { setButtonState } from "./ReduxStore/actions";
 
 function App() {
   const dispatch = useDispatch();
-  const connection = new WebSocket("ws://localhost:8080/");
+  const connection = new WebSocket(process.env.REACT_APP_WS_URL);
 
-  connection.addEventListener("message", event => {
-    let data;
+  const changeButtonState = state => {
+    dispatch(setButtonState(state));
+  };
+
+  const handleWSMessage = event => {
     try {
-      data = JSON.parse(event.data);
-    } catch (e) {
+      const data = JSON.parse(event.data);
+      changeButtonState(data.buttonState);
+    } catch {
       console.log("Not valid JSON");
-      return;
     }
-    dispatch(setButtonState(data.buttonState));
-  });
+  };
+
+  connection.addEventListener("message", handleWSMessage);
+  connection.addEventListener("error", () => console.log("Connection error"));
 
   return (
     <div className="App">
