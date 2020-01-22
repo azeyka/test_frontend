@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 
 function Button(props) {
   const { connection } = props;
-  const isButtonOn = useSelector(state => state.buttonReducer);
+  const isButtonOn = useSelector(state => state.buttonStateReducer);
+
   const style = {
     width: props.size,
     height: props.size,
@@ -38,7 +39,7 @@ Button.propTypes = {
 Button.defaultProps = {
   size: "150px",
   colorOn: "red",
-  colorOff: "gray",
+  colorOff: "darkgray",
   fontColor: "white"
 };
 
