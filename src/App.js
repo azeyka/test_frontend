@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Button from "./Components/Button";
+import { useDispatch } from "react-redux";
+import { setButtonState } from "./ReduxStore/actions";
 
 function App() {
+  const dispatch = useDispatch();
+  const connection = new WebSocket("ws://localhost:8080/");
+
+  connection.addEventListener("message", event => {
+    let data;
+    try {
+      data = JSON.parse(event.data);
+    } catch (e) {
+      console.log("Not valid JSON");
+      return;
+    }
+    dispatch(setButtonState(data.buttonState));
+  });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button connection={connection} />
     </div>
   );
 }
